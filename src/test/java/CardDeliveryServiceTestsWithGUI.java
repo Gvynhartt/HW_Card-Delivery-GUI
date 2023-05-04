@@ -94,15 +94,18 @@ public class CardDeliveryServiceTestsWithGUI {
         String date4input = TestDataGenerator.generateDateForInput(7, "dd.MM.yyyy");
         String date4search = TestDataGenerator.generateDateForInput(7, "d"); // новый формат даты (день) для поиска по XPath
 
+        String currentMonth = TestDataGenerator.generateDateForInput(0, "MM"); // заводим переменную с текущим месяцем (понадобится далее)
+        String monthIn7days = TestDataGenerator.generateDateForInput(7, "MM"); // заводим переменную с месяцем для даты через 7 дней
+
         $(By.xpath("//span[@data-test-id='city']/descendant::input[@placeholder='Город']")).setValue("Кызыл");
         $x("//span[@data-test-id='date']/descendant::button[@role='button']").click();
         // отправляем клик по кнопке с иконкой календаря рядом с полем ввода даты
         $x("//div[@class='popup__container']/descendant::div[@role='grid']").should(Condition.appear);
         // проверяем, что элемент календаря стал видим для пользователя
 
-        // собственно, вот проверка, нужно ли перелистывать календарь
-        if ( $x("//tr[@class='calendar__row'][last()]/td[contains(@class,'calendar__day_state_today')]").exists() ) {
-            // мы проверяем в условии, существует ли ячейка с селектором текущего дня в последнем из всех элементов, формирующих отдельную строку в календаре
+        // проверка, нужно ли перелистывать календарь,В ДОРАБОТАННОМ ВИДЕ
+        if ( !currentMonth.equals(monthIn7days) ) {
+            // мы проверяем в условии, попадает ли дата через 7 дней после текущей на следующий (отличный от текущего) иесяц
             $x("//div[@class='calendar__title']/div[@data-step=\"1\"]").click();
             // и если эта проверка проходит, жмём на кнопку, перелистывающую календарь на месяц вперёд
             $x("//div[@class='calendar__title']/div[@data-step=\"-1\"]").should(Condition.appear);
